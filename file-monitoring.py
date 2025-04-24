@@ -13,32 +13,37 @@ def compute_file_hash(file_path):
     return hash_object.hexdigest()
 
 # Function to save the hash to a file
-def save_hash(hash_value):
-    with open("saved_hash.txt", "w") as f:
+def save_hash(file_name, hash_value):
+    with open(f"saved_{file_name}_hash.txt", "w") as f:
         f.write(hash_value)
 
-# Function to check if the file has changed
-def check_file_integrity(file_path):
-    # Step 1: Compute the current hash of the file
-    current_hash = compute_file_hash(file_path)
-    
-    # Step 2: Read the saved hash
+# Function to read the saved hash of a file
+def read_saved_hash(file_name):
     try:
-        with open("saved_hash.txt", "r") as f:
-            saved_hash = f.read().strip()
+        with open(f"saved_{file_name}_hash.txt", "r") as f:
+            return f.read().strip()
     except FileNotFoundError:
-        saved_hash = None
-    
-    # Step 3: Compare the hashes
-    if saved_hash == current_hash:
-        print("File has not been modified.")
-    elif saved_hash is None:
-        print("File is being checked for the first time. Saving current hash.")
-        save_hash(current_hash)  # Save the current hash as the reference for future checks
-    else:
-        print("File has been modified.")
-        save_hash(current_hash)  # Update the saved hash to the new one
+        return None
 
-# Example usage
-file_path = "example.txt"
-check_file_integrity(file_path)
+# Function to check if the file has changed
+def check_files_integrity(file_paths):
+    for file_path in file_paths:
+        current_hash = compute_file_hash(file_path)
+        file_name = file_path.split("/")[-1]  # Get file name (e.g., "example.txt")
+        
+        # Read saved hash for each file
+        saved_hash = read_saved_hash(file_name)
+
+        if saved_hash == current_hash:
+            print(f"{file_name} has not been modified.")
+        elif saved_hash is None:
+            print(f"{file_name} is being checked for the first time. Saving current hash.")
+            save_hash(file_name, current_hash)  # Save the current hash for future comparisons
+        else:
+            print(f"{file_name} has been modified.")
+            save_hash(file_name, current_hash)  # Update the saved hash with the new one
+
+# Example usage for two files
+file_paths = ["example.txt", "example1.txt"]
+check_files_integrity(file_paths)
+
