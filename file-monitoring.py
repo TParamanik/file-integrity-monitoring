@@ -5,10 +5,10 @@ HASH_STORE = "hashes.txt"
 
 # Function to compute the SHA-256 hash of a file
 def compute_file_hash(file_path):
-    with open(file_path, "r") as file:
+    with open(file_path, "rb") as file:
         content = file.read()
     hash_object = hashlib.sha256()
-    hash_object.update(content.encode('utf-8'))
+    hash_object.update(content)
     return hash_object.hexdigest()
 
 # Function to load all saved hashes from hashes.txt
