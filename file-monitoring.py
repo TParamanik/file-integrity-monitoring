@@ -37,11 +37,7 @@ def check_files_integrity(file_paths):
         current_hash = compute_file_hash(file_path)
         saved_hash = saved_hashes.get(file_name)
 
-        if saved_hash == current_hash:
-            print(f"{file_name} has not been modified.")
-        elif saved_hash is None:
-            print(f"{file_name} is being checked for the first time. Saving current hash.")
-        else:
+        if saved_hash != current_hash:
             print(f"{file_name} has been modified.")
 
         # Update the hash store
